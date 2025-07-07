@@ -1,0 +1,60 @@
+spring:
+  application:
+    name: UserTest
+
+  cloud:
+    config:
+      import-check:
+        enabled: false
+      
+  devtools:
+    restart:
+      enabled: false
+    livereload:
+      enabled: false
+
+server:
+  port: 8082
+  host: myusertestuat
+  connectionTimeout: 6000
+
+db:
+  datasource:
+    url: jdbc:postgresql://myuserdbuat:5432/mydb123
+    username: myuser
+    password: mypassworduat
+
+management:
+  endpoint:
+    env:
+      show-values: ALWAYS
+  endpoints:
+    web:
+      exposure:
+        #include: '*'  # Expose all endpoints
+        include: health, info, beans, env, configprops, refresh
+
+resilience4j:
+  circuitbreaker:
+    instances:
+      getCountriesCircuitBreaker:
+        registerHealthIndicator: true
+        slidingWindowSize: 5
+        minimumNumberOfCalls: 5
+        failureRateThreshold: 50
+        waitDurationInOpenState: 60s
+        permittedNumberOfCallsInHalfOpenState: 3
+        eventConsumerBufferSize: 10
+  ratelimiter:
+    instances:
+      getCountriesRateLimiter:
+        limitForPeriod: 2          # Max 5 calls allowed
+        limitRefreshPeriod: 60s    # Refresh limit every 10 sec
+        timeoutDuration: 1s        # Wait max 2 sec if limit exceeded
+        registerHealthIndicator: true
+
+logging:
+  level:
+    io.github.resilience4j: DEBUG
+    org.springframework.web: DEBUG
+    org.springframework.security: DEBUG
