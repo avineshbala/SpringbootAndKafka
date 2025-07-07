@@ -1,0 +1,19 @@
+spring:
+  application:
+    name: kafka-connection-service
+  kafka:
+        bootstrap-servers: localhost:9092
+        producer:
+            key-serializer: org.apache.kafka.common.serialization.StringSerializer
+            value-serializer: org.apache.kafka.common.serialization.StringSerializer
+            properties:
+              partitioner.class: com.example.kafka_connection_service.service.Partition
+        consumer:
+            group-id: my-consumer-group
+            auto-offset-reset: earliest
+            key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+            value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+server:
+  port: 8087
+  host: localhost
+  connectionTimeout: 5000
